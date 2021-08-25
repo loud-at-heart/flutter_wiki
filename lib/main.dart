@@ -21,6 +21,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light().copyWith(
         primaryColor: Color(0xff5E56E7),
         buttonColor: Color(0xff5E56E7),
+        bottomSheetTheme: BottomSheetThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.only(
+              topLeft: const Radius.circular(40.0),
+              topRight: const Radius.circular(40.0),
+            ),
+          ),
+        ),
         floatingActionButtonTheme:
             FloatingActionButtonThemeData(backgroundColor: Color(0xff5E56E7)),
         textTheme: GoogleFonts.montserratTextTheme(

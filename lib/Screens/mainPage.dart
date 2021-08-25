@@ -228,7 +228,7 @@ class _MainPageState extends State<MainPage> {
                   'assets/images/Back.svg',
                   color: Colors.white,
                 )
-              : Icon(Icons.history),
+              : Icon(Icons.history_rounded,size: 40,),
         ),
         floatingActionButtonLocation: isBottomSheetOpen
             ? FloatingActionButtonLocation.startFloat

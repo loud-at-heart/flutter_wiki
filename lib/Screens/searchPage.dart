@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
   final String subString;
+
   const SearchPage({Key? key, required this.subString}) : super(key: key);
 
   @override
@@ -48,8 +49,8 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     // TODO: implement initState
     loadSharedPreferencesAndData();
-    if(widget.subString != ''){
-      _searchController.text=widget.subString;
+    if (widget.subString != '') {
+      _searchController.text = widget.subString;
       setState(() {
         query = _searchController.text;
       });
@@ -79,6 +80,15 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   addItem(Recents item) {
+    //Remove if the item is already there
+    var toRemove = [];
+    list.forEach((element) {
+      if (element.title == item.title) {
+        print('${element.title} is found');
+        toRemove.add(element);
+      }
+    });
+    list.removeWhere((e) => toRemove.contains(e));
     //Adding the item to the recents
     if (list.isEmpty || list[0].title != item.title) {
       list.insert(0, item);
