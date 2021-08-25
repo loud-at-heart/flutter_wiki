@@ -13,7 +13,7 @@ You can add any more features you think will be good to have.
 This is the Wikipedia API:
 - [Search API](https://en.wikipedia.org/w/api.php?action=query&format=json&prop=pageimages%7Cpageterms&generator=prefixsearch&redirects=1&formatversion=2&piprop=thumbnail&pithumbsize=50&pilimit=10&wbptterms=description&gpslimit=10&gpssearch=albert&gpsoffset=0)
 - [Page Details API](https://en.wikipedia.org/w/api.php?action=query&prop=info&inprop=url&format=json&pageids=717)
-
+- [Combined API](https://en.wikipedia.org//w/api.php?action=query&format=json&prop=extracts%7Cpageimages%7Cpageterms%7Cinfo&inprop=url&generator=prefixsearch&formatversion=2&piprop=thumbnail&pithumbsize=50&wbptterms=description&exsentences=5&exintro=1&explaintext=1&gpslimit=50&gpssearch=india)
 ## Getting Started
 
 A few resources to get you started :

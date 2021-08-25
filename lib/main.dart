@@ -18,12 +18,15 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Wiki',
       debugShowCheckedModeBanner: false,
-      // theme: ThemeData.light().copyWith(
-      //   primaryColor: Color(0xff5E56E7),
-      //   textTheme: GoogleFonts.montserratTextTheme(
-      //     Theme.of(context).textTheme,
-      //   ),
-      // ),
+      theme: ThemeData.light().copyWith(
+        primaryColor: Color(0xff5E56E7),
+        buttonColor: Color(0xff5E56E7),
+        floatingActionButtonTheme:
+            FloatingActionButtonThemeData(backgroundColor: Color(0xff5E56E7)),
+        textTheme: GoogleFonts.montserratTextTheme(
+          Theme.of(context).textTheme,
+        ),
+      ),
       // darkTheme: ThemeData.dark().copyWith(
       //   primaryColor: Color(0xff5E56E7),
       //   textTheme: GoogleFonts.ubuntuTextTheme(
@@ -57,10 +60,10 @@ class _SplashScreenState extends State<SplashScreen>
     internetConnectivity();
     Timer(
         Duration(seconds: 2),
-            () => {
-          Navigator.of(context).pushReplacement(MaterialPageRoute(
-              builder: (BuildContext context) => MainPage()))
-        });
+        () => {
+              Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  builder: (BuildContext context) => MainPage()))
+            });
   }
 
   internetConnectivity() async {
@@ -90,10 +93,13 @@ class _SplashScreenState extends State<SplashScreen>
               height: newheight,
               width: width,
               // color: Colors.amber,
-              child: SvgPicture.asset(
-                "assets/images/Pattern.svg",
-                fit: BoxFit.cover,
-                height: 350,
+              child: Hero(
+                tag: 'Pattern',
+                child: SvgPicture.asset(
+                  "assets/images/Pattern.svg",
+                  fit: BoxFit.cover,
+                  height: 350,
+                ),
               ),
             ),
             Container(
@@ -106,25 +112,31 @@ class _SplashScreenState extends State<SplashScreen>
                 children: <Widget>[
                   FadeTransition(
                     opacity: animation,
-                    child: Text(
-                      'Flutter',
-                      style: TextStyle(
-                        fontSize: 48.0,
-                        color: Color(0xff5E56E7),
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.w600,
+                    child: Hero(
+                      tag: 'Flutter',
+                      child: Text(
+                        'Flutter',
+                        style: TextStyle(
+                          fontSize: 48.0,
+                          color: Color(0xff5E56E7),
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
                   FadeTransition(
                     opacity: animation,
-                    child: Text(
-                      'Wiki',
-                      style: TextStyle(
-                        fontSize: 48.0,
-                        color: Color(0xff5E56E7),
-                        fontFamily: 'Montserrat',
-                        fontWeight: FontWeight.w600,
+                    child: Hero(
+                      tag: 'Wiki',
+                      child: Text(
+                        'Wiki',
+                        style: TextStyle(
+                          fontSize: 48.0,
+                          color: Color(0xff5E56E7),
+                          fontFamily: 'Montserrat',
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
