@@ -33,13 +33,13 @@ TextStyle kSearchBox = TextStyle(
   fontFamily: 'Montserrat',
 );
 
-TextStyle kBookName = TextStyle(
+TextStyle kSearchName = TextStyle(
   fontSize: 12.0,
   color: Color(0xff333333),
   fontFamily: 'Montserrat',
 );
 
-TextStyle kBookAuthor = TextStyle(
+TextStyle kSearchSummary = TextStyle(
   fontSize: 12.0,
   color: Color(0xffA0A0A0),
   fontFamily: 'Montserrat',

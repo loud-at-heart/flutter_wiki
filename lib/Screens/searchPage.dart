@@ -3,12 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_wiki/Constants.dart';
 import 'package:flutter_wiki/Model/recent.dart';
 import 'package:flutter_wiki/Model/wiki.dart';
 import 'package:flutter_wiki/Screens/mainPage.dart';
 import 'package:flutter_wiki/Services/searchList.dart';
 import 'package:flutter_wiki/Services/share.dart';
 import 'package:flutter_wiki/Widgets/shimmer_image.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -208,98 +210,127 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: SingleChildScrollView(
         child: Container(
-            margin: EdgeInsets.all(10),
-            height: height * 0.7,
-            child: query.isEmpty
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        child: Image(
-                          image: AssetImage("assets/images/welcome.webp"),
-                          fit: BoxFit.contain,
-                        ),
+          margin: EdgeInsets.all(10),
+          height: height * 0.7,
+          child: query.isEmpty
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      child: Image(
+                        image: AssetImage("assets/images/welcome.webp"),
+                        fit: BoxFit.contain,
                       ),
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        child: Text(
-                          "Type to Search ...",
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Montserrat'),
-                        ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      child: Text(
+                        "Type to Search ...",
+                        style: kBody
                       ),
-                    ],
-                  )
-                : results.query != null
-                    ? ListView.builder(
-                        itemCount: results.query!.pages!.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              elevation: 5,
-                              // color: DynamicColor().getColor(1.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child: ListTile(
-                                  onLongPress: () {
-                                    HapticFeedback.heavyImpact();
-                                    share(
-                                        context,
-                                        searchResultData!.pages![index].extract,
-                                        searchResultData.pages![index].url);
-                                  },
-                                  onTap: () {
-                                    launchURL(
-                                        searchResultData!.pages![index].url);
-                                  },
-                                  tileColor: Colors.white,
-                                  contentPadding: EdgeInsets.all(8.0),
-                                  leading: searchResultData!
-                                              .pages![index].thumbnail !=
-                                          null
-                                      ? searchResultData.pages![index] != null
-                                          ? CacheImage(
-                                              url: searchResultData
-                                                  .pages![index]
-                                                  .thumbnail!
-                                                  .source,
-                                            )
-                                          : Image.asset(
-                                              "assets/images/wiki.png")
-                                      : Image.asset(
-                                          "assets/images/wiki.png",
-                                          scale: 8,
-                                          height: 80,
-                                          width: 80,
-                                        ),
-                                  subtitle: Text(
-                                    searchResultData.pages![index].terms != null
-                                        ? searchResultData.pages![index].terms!
-                                            .description![0]
-                                        : "Description not available",
+                    ),
+                  ],
+                )
+              : results.query != null
+                  ? results.batchcomplete == null
+                      ? ListView.builder(
+                          itemCount: results.query!.pages!.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                elevation: 5,
+                                // color: DynamicColor().getColor(1.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: ListTile(
+                                    onLongPress: () {
+                                      HapticFeedback.heavyImpact();
+                                      share(
+                                          context,
+                                          searchResultData!
+                                              .pages![index].extract,
+                                          searchResultData.pages![index].url);
+                                    },
+                                    onTap: () {
+                                      launchURL(
+                                          searchResultData!.pages![index].url);
+                                    },
+                                    tileColor: Colors.white,
+                                    contentPadding: EdgeInsets.all(8.0),
+                                    leading: searchResultData!
+                                                .pages![index].thumbnail !=
+                                            null
+                                        ? searchResultData.pages![index] != null
+                                            ? CacheImage(
+                                                url: searchResultData
+                                                    .pages![index]
+                                                    .thumbnail!
+                                                    .source,
+                                              )
+                                            : Image.asset(
+                                                "assets/images/wiki.png")
+                                        : Image.asset(
+                                            "assets/images/wiki.png",
+                                            scale: 8,
+                                            height: 80,
+                                            width: 80,
+                                          ),
+                                    subtitle: Text(
+                                      searchResultData.pages![index].terms !=
+                                              null
+                                          ? searchResultData.pages![index]
+                                              .terms!.description![0]
+                                          : "Description not available",
+                                    ),
+                                    title: Text(
+                                      results.query!.pages![index].title,
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                    isThreeLine: true,
                                   ),
-                                  title: Text(
-                                    results.query!.pages![index].title,
-                                    style:
-                                        Theme.of(context).textTheme.headline6,
-                                  ),
-                                  isThreeLine: true,
                                 ),
                               ),
-                            ),
-                          );
-                        })
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Center(child: CircularProgressIndicator()),
-                        ],
-                      )),
+                            );
+                          })
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                child: Image(
+                                  image: AssetImage("assets/images/nodata.jpg"),
+                                  height: height * 0.5,
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(15),
+                                child: Text(
+                                  "No Results Found!",
+                                  style: kHeadingTwo,
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(15),
+                                child: Text(
+                                  "Try searching another keyword",
+                                  style: kBody,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                  : Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Center(child: CircularProgressIndicator()),
+                      ],
+                    ),
+        ),
       ),
     );
   }
