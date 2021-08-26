@@ -1,9 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_wiki/Constants.dart';
+import 'package:flutter_wiki/Model/browse.dart';
 import 'package:flutter_wiki/Model/recent.dart';
 import 'package:flutter_wiki/Model/wiki.dart';
 import 'package:flutter_wiki/Screens/mainPage.dart';
@@ -29,6 +29,7 @@ class _SearchPageState extends State<SearchPage> {
   TextEditingController _searchController = TextEditingController();
   String query = '';
   List<Recents> list = [];
+  List<Browse> browseList = [];
   SharedPreferences? sharedPreferences;
 
   void searchWiki(String query, bool onSubmitted) async {
@@ -73,6 +74,17 @@ class _SearchPageState extends State<SearchPage> {
     } else {
       list = [];
     }
+    List<String>? browseListString =
+        sharedPreferences!.getStringList('browseList');
+    if (browseListString != null) {
+      setState(() {
+        browseList = browseListString
+            .map((item) => Browse.fromMap(json.decode(item)))
+            .toList();
+      });
+    } else {
+      browseList = [];
+    }
   }
 
   void loadSharedPreferencesAndData() async {
@@ -104,6 +116,31 @@ class _SearchPageState extends State<SearchPage> {
         list.map((item) => json.encode(item.toMap())).toList();
     sharedPreferences!.setStringList('list', stringList);
     print('Items Saved');
+  }
+
+  addBrowseItem(Browse item) {
+    //Remove if the item is already there
+    var toRemove = [];
+    browseList.forEach((element) {
+      if (element.title == item.title) {
+        print('${element.title} is found');
+        toRemove.add(element);
+      }
+    });
+    browseList.removeWhere((e) => toRemove.contains(e));
+    //Adding the item to the recents
+    if (browseList.isEmpty || browseList[0].title != item.title) {
+      browseList.insert(0, item);
+    }
+    saveBrowseData();
+  }
+
+  void saveBrowseData() {
+    //Saving the recents data in the shared preferences
+    List<String> stringList =
+        browseList.map((item) => json.encode(item.toMap())).toList();
+    sharedPreferences!.setStringList('browseList', stringList);
+    print('Browsing Items Saved');
   }
 
   @override
@@ -224,15 +261,12 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                     Container(
                       padding: EdgeInsets.all(15),
-                      child: Text(
-                        "Type to Search ...",
-                        style: kBody
-                      ),
+                      child: Text("Type to Search ...", style: kBody),
                     ),
                   ],
                 )
               : results.query != null
-                  ? results.batchcomplete == null
+                  ? results.batchcomplete != true
                       ? ListView.builder(
                           itemCount: results.query!.pages!.length,
                           itemBuilder: (context, index) {
@@ -255,8 +289,29 @@ class _SearchPageState extends State<SearchPage> {
                                           searchResultData.pages![index].url);
                                     },
                                     onTap: () {
+                                      addBrowseItem(
+                                        Browse(
+                                          title: results
+                                              .query!.pages![index].title,
+                                          url: results
+                                              .query!
+                                              .pages![index].url,
+                                          desc: results
+                                              .query!
+                                                      .pages![index].terms !=
+                                                  null
+                                              ? results
+                                              .query!.pages![index]
+                                                  .terms!.description![0]
+                                              : "Description not available",
+                                          extract: results
+                                              .query!
+                                              .pages![index].extract,
+                                        ),
+                                      );
                                       launchURL(
-                                          searchResultData!.pages![index].url);
+                                          results
+                                              .query!.pages![index].url);
                                     },
                                     tileColor: Colors.white,
                                     contentPadding: EdgeInsets.all(8.0),

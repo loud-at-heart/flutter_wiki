@@ -24,6 +24,20 @@ class CatalogService {
     Directory(cacheDir).delete(recursive: true);
   }
 
+  deleteSpecificCache(String name) async {
+    //Deleting the cache files which is stored in the temporary directory
+    var cacheDir = (await getTemporaryDirectory()).path;
+    String fileName = "$name.json";
+    if(await File(cacheDir + "/" + fileName).exists()){
+      try {
+        final file = File(cacheDir + "/" + fileName);
+        await file.delete();
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
+
   Future<dynamic> searchWiki(String searchQuery, bool onSubmitted) async {
     String fileName = "$searchQuery.json";
     var cacheDir = await getTemporaryDirectory();

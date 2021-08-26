@@ -21,6 +21,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.light().copyWith(
         primaryColor: Color(0xff5E56E7),
         buttonColor: Color(0xff5E56E7),
+        tabBarTheme: TabBarTheme(
+          labelColor: Color(0xff5E56E7),
+          unselectedLabelColor: Colors.grey,
+        ),
         bottomSheetTheme: BottomSheetThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.only(

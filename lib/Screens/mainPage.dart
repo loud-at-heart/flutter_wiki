@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_wiki/Model/browse.dart';
 import 'package:flutter_wiki/Model/recent.dart';
 import 'package:flutter_wiki/Screens/searchPage.dart';
 import 'package:flutter_wiki/Services/searchList.dart';
@@ -25,6 +26,7 @@ class _MainPageState extends State<MainPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isBottomSheetOpen = false;
   List<Recents> list = <Recents>[];
+  List<Browse> browseList = <Browse>[];
   SharedPreferences? sharedPreferences;
 
   @override
@@ -47,6 +49,17 @@ class _MainPageState extends State<MainPage> {
     } else {
       list = <Recents>[];
     }
+    List<String>? browseListString =
+        sharedPreferences!.getStringList('browseList');
+    if (browseListString != null) {
+      setState(() {
+        browseList = browseListString
+            .map((item) => Browse.fromMap(json.decode(item)))
+            .toList();
+      });
+    } else {
+      browseList = [];
+    }
   }
 
   removeData() async {
@@ -55,10 +68,32 @@ class _MainPageState extends State<MainPage> {
     loadData();
   }
 
+  removeSpecificData(String value) async {
+    //Remove specific
+    var toRemove = [];
+    list.forEach((element) {
+      if (element.title == value) {
+        print('${element.title} is found');
+        toRemove.add(element);
+      }
+    });
+    list.removeWhere((e) => toRemove.contains(e));
+    saveData();
+    loadData();
+  }
+
   void loadSharedPreferencesAndData() async {
     //Initializing the shared preferences
     sharedPreferences = await SharedPreferences.getInstance();
     loadData();
+  }
+
+  void saveData() {
+    //Saving the recents data in the shared preferences
+    List<String> stringList =
+        list.map((item) => json.encode(item.toMap())).toList();
+    sharedPreferences!.setStringList('list', stringList);
+    print('Items Saved');
   }
 
   void _showPersistentBottomSheet() {
@@ -76,7 +111,9 @@ class _MainPageState extends State<MainPage> {
               removeRecent: () => removeData(),
               service: catalogService,
               recentList: list,
+              browseList: browseList,
               loadList: () => loadSharedPreferencesAndData(),
+              removeSpecificItem: (value) => removeSpecificData(value),
             );
           },
           elevation: 25,
@@ -180,8 +217,12 @@ class _MainPageState extends State<MainPage> {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SearchPage(subString: '',)));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SearchPage(
+                                  subString: '',
+                                )));
                   },
                   child: AvatarGlow(
                     glowColor: Colors.blue,
@@ -229,7 +270,10 @@ class _MainPageState extends State<MainPage> {
                   'assets/images/Back.svg',
                   color: Colors.white,
                 )
-              : Icon(Icons.history_rounded,size: 40,),
+              : Icon(
+                  Icons.history_rounded,
+                  size: 40,
+                ),
         ),
         floatingActionButtonLocation: isBottomSheetOpen
             ? FloatingActionButtonLocation.startFloat
