@@ -87,6 +87,7 @@ class _MainPageState extends State<MainPage> {
             setState(() {
               // Re-enable the bottom sheet button.
               _showBottomSheetCallback = _showPersistentBottomSheet;
+              isBottomSheetOpen = false;
             });
           }
         });

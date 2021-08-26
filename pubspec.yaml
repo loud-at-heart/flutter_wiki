@@ -39,6 +39,7 @@ dependencies:
   cached_network_image: ^3.1.0
   shimmer: ^2.0.0
   url_launcher: ^6.0.9
+  html: any
 
 dev_dependencies:
   flutter_test:

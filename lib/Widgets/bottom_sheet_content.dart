@@ -26,20 +26,20 @@ class BottomSheetContent extends StatefulWidget {
 class _BottomSheetContentState extends State<BottomSheetContent> {
   @override
   void initState() {
-    widget.loadList;
+    // widget.loadList;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.5,
+      height: MediaQuery.of(context).size.height * 0.6,
       child: Column(
         children: [
           ListTile(
             title: Center(
               child: Padding(
-                padding: const EdgeInsets.only(left: 80.0),
+                padding: const EdgeInsets.only(left: 60.0),
                 child: Text(
                   'HISTORY',
                   textAlign: TextAlign.center,
@@ -47,24 +47,28 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                 ),
               ),
             ),
-            trailing: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                primary: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(50),
+            trailing: ClipOval(
+              child: Material(
+                color: Colors.red, // Button color
+                child: InkWell(
+                  splashColor: Colors.red.shade800, // Splash color
+                  onTap: () {
+                    setState(() {
+                      widget.removeRecent();
+                      widget.loadList();
+                      widget.recentList.clear();
+                      widget.service.deleteAllCache();
+                    });
+                  },
+                  child: SizedBox(
+                    width: 45,
+                    height: 45,
+                    child: Icon(
+                      FontAwesomeIcons.broom,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                setState(() {
-                  widget.removeRecent();
-                  widget.loadList();
-                  widget.recentList.clear();
-                  widget.service.deleteAllCache();
-                });
-              },
-              child: Icon(
-                FontAwesomeIcons.broom,
-                // color: Colors.red,
               ),
             ),
           ),
@@ -96,10 +100,18 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                     },
                   ),
                 )
-              : Image.asset(
-                  "assets/images/loading.gif",
-                  height: 250.0,
-                  width: 250.0,
+              : Column(
+                  children: [
+                    Image.asset(
+                      "assets/images/loading.gif",
+                      height: 250.0,
+                      width: 250.0,
+                    ),
+                    Text(
+                      'Search something...',
+                      style: kBody,
+                    ),
+                  ],
                 ),
         ],
       ),
