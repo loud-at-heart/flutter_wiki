@@ -175,8 +175,9 @@ class _MainPageState extends State<MainPage> {
   }
 
   void showInSnackBar(String value) {
-    final snackBar =
-        new SnackBar(content: new Text(value), backgroundColor: Colors.red);
+    final snackBar = new SnackBar(
+        content: new Text(value),
+        backgroundColor: isConnected! ? Colors.green : Colors.red);
 
     // Find the Scaffold in the Widget tree and use it to show a SnackBar!
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -192,159 +193,165 @@ class _MainPageState extends State<MainPage> {
         setState(() {
           isConnected = false;
         });
+        WidgetsBinding.instance!.addPostFrameCallback(
+            (_) => showInSnackBar('Internet Not Connected'));
         break;
       case ConnectivityResult.mobile:
         setState(() {
           isConnected = true;
         });
+        WidgetsBinding.instance!.addPostFrameCallback(
+            (_) => showInSnackBar('Mobile Internet Connected'));
         break;
       case ConnectivityResult.wifi:
         setState(() {
           isConnected = true;
         });
+        WidgetsBinding.instance!.addPostFrameCallback(
+            (_) => showInSnackBar('Wifi Internet Connected'));
     }
 
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Color(0xffF8F7FF),
         body: SingleChildScrollView(
-            child: SafeArea(
-              child: Column(
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                        height: 250.0,
+          child: SafeArea(
+            child: Column(
+              children: <Widget>[
+                Stack(
+                  children: <Widget>[
+                    Container(
+                      height: 250.0,
+                      width: width,
+                      // color: Colors.amber,
+                      child: Hero(
+                        tag: 'Pattern',
+                        child: SvgPicture.asset(
+                          "assets/images/Pattern.svg",
+                          fit: BoxFit.cover,
+                          height: 350,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 100,
+                      top: 10,
+                      child: Container(
+                        // height: 250.0,
                         width: width,
                         // color: Colors.amber,
-                        child: Hero(
-                          tag: 'Pattern',
-                          child: SvgPicture.asset(
-                            "assets/images/Pattern.svg",
-                            fit: BoxFit.cover,
-                            height: 350,
-                          ),
+                        child: Image.asset(
+                          "assets/images/wiki.png",
+                          // fit: BoxFit.scaleDown,
+                          height: 170,
+                          width: 170,
                         ),
                       ),
-                      Positioned(
-                        left: 100,
-                        top: 10,
-                        child: Container(
-                          // height: 250.0,
-                          width: width,
-                          // color: Colors.amber,
-                          child: Image.asset(
-                            "assets/images/wiki.png",
-                            // fit: BoxFit.scaleDown,
-                            height: 170,
-                            width: 170,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(20.0, 50.0, 20.0, 10.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Hero(
-                              tag: 'Flutter',
-                              child: Text(
-                                'Flutter',
-                                style: kHeadingOne,
-                              ),
-                            ),
-                            Hero(
-                              tag: 'Wiki',
-                              child: Text(
-                                'Wiki',
-                                style: kHeadingOne,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 20.0,
-                            ),
-                            Text(
-                              kDesc,
-                              maxLines: 3,
-                              style: kBody,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  isConnected!
-                      ? InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SearchPage(
-                                  subString: '',
-                                ),
-                              ),
-                            );
-                          },
-                          child: AvatarGlow(
-                            glowColor: Colors.blue,
-                            endRadius: 90.0,
-                            duration: Duration(milliseconds: 2000),
-                            repeat: true,
-                            showTwoGlows: true,
-                            repeatPauseDuration: Duration(milliseconds: 100),
-                            child: Material(
-                              // Replace this child with your own
-                              elevation: 8.0,
-                              shape: CircleBorder(),
-                              child: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                child: Hero(
-                                  tag: 'search',
-                                  child: SvgPicture.asset(
-                                    'assets/images/Search.svg',
-                                    fit: BoxFit.none,
-                                  ),
-                                ),
-                                radius: 30.0,
-                              ),
+                    ),
+                    Padding(
+                      padding:
+                          const EdgeInsets.fromLTRB(20.0, 50.0, 20.0, 10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Hero(
+                            tag: 'Flutter',
+                            child: Text(
+                              'Flutter',
+                              style: kHeadingOne,
                             ),
                           ),
-                        )
-                      : SizedBox(
-                          height: height * 0.3,
+                          Hero(
+                            tag: 'Wiki',
+                            child: Text(
+                              'Wiki',
+                              style: kHeadingOne,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 20.0,
+                          ),
+                          Text(
+                            kDesc,
+                            maxLines: 3,
+                            style: kBody,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                isConnected!
+                    ? InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SearchPage(
+                                subString: '',
+                              ),
+                            ),
+                          );
+                        },
+                        child: AvatarGlow(
+                          glowColor: Colors.blue,
+                          endRadius: 90.0,
+                          duration: Duration(milliseconds: 2000),
+                          repeat: true,
+                          showTwoGlows: true,
+                          repeatPauseDuration: Duration(milliseconds: 100),
                           child: Material(
                             // Replace this child with your own
                             elevation: 8.0,
                             shape: CircleBorder(),
                             child: CircleAvatar(
                               backgroundColor: Colors.white,
-                              child: SvgPicture.asset(
-                                'assets/images/noInternet.svg',
-                                fit: BoxFit.scaleDown,
-                                height: 50.0,
-                                width: 50.0,
+                              child: Hero(
+                                tag: 'search',
+                                child: SvgPicture.asset(
+                                  'assets/images/Search.svg',
+                                  fit: BoxFit.none,
+                                ),
                               ),
                               radius: 30.0,
                             ),
                           ),
                         ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      isConnected! ? kSearch : kSearchNoInternet,
-                      maxLines: 3,
-                      style: kHeadingTwo.copyWith(fontSize: 20.0),
-                    ),
+                      )
+                    : SizedBox(
+                        height: height * 0.3,
+                        child: Material(
+                          // Replace this child with your own
+                          elevation: 8.0,
+                          shape: CircleBorder(),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            child: SvgPicture.asset(
+                              'assets/images/noInternet.svg',
+                              fit: BoxFit.scaleDown,
+                              height: 50.0,
+                              width: 50.0,
+                            ),
+                            radius: 30.0,
+                          ),
+                        ),
+                      ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    isConnected! ? kSearch : kSearchNoInternet,
+                    maxLines: 3,
+                    style: kHeadingTwo.copyWith(fontSize: 20.0),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: isBottomSheetOpen
               ? _hideBottomSheetCallback
