@@ -60,6 +60,7 @@ class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> animation;
+  // bool? isConnected;
 
   @override
   void initState() {
@@ -69,26 +70,12 @@ class _SplashScreenState extends State<SplashScreen>
         duration: const Duration(milliseconds: 1000), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
     controller.forward();
-    internetConnectivity();
     Timer(
         Duration(seconds: 2),
         () => {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (BuildContext context) => MainPage()))
             });
-  }
-
-  internetConnectivity() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        print('connected');
-      }
-    } on SocketException catch (_) {
-      print('not connected');
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (BuildContext context) => NoInternet()));
-    }
   }
 
   @override

@@ -47,6 +47,7 @@ TextStyle kSearchSummary = TextStyle(
 
 String kDesc ='Wikipedia is an online free content encyclopedia project helping create a world in which everyone can freely share in the sum of all knowledge.';
 String kSearch ='What are you looking for ?';
+String kSearchNoInternet ='You are not Connected !';
 List<String> genre = [
   "Fiction",
   "Drama",

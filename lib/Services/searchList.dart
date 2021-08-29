@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'networking.dart';
 import 'package:path_provider/path_provider.dart';
@@ -45,6 +46,7 @@ class CatalogService {
       //If the files are available in cache then the files will be viewd here
       print('Reading from Cache');
       var jsonData = File(cacheDir.path + "/" + fileName).readAsStringSync();
+
       NetworkHelper networkHelper = NetworkHelper(jsonData);
       var catalogData = await networkHelper.getDataFromJson();
       return catalogData;

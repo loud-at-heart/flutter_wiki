@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_wiki/Model/browse.dart';
 import 'package:flutter_wiki/Model/recent.dart';
 import 'package:flutter_wiki/Screens/searchPage.dart';
 import 'package:flutter_wiki/Services/searchList.dart';
+import 'package:flutter_wiki/Utils/checkConnectivity.dart';
 import 'package:flutter_wiki/Widgets/bottom_sheet_content.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,10 +30,18 @@ class _MainPageState extends State<MainPage> {
   List<Recents> list = <Recents>[];
   List<Browse> browseList = <Browse>[];
   SharedPreferences? sharedPreferences;
+  bool? isConnected;
+  MyConnectivity _connectivity = MyConnectivity.instance;
+  Map _source = {ConnectivityResult.none: false};
 
   @override
   void initState() {
-    super.initState();
+    _connectivity.initialise();
+    _connectivity.myStream.listen((source) {
+      if (mounted) {
+        setState(() => _source = source);
+      }
+    });
     _showBottomSheetCallback = _showPersistentBottomSheet;
     _hideBottomSheetCallback = _hidePersistentBottomSheet;
     loadSharedPreferencesAndData();
@@ -49,6 +59,7 @@ class _MainPageState extends State<MainPage> {
     } else {
       list = <Recents>[];
     }
+    //Loading the reselts data and mapping them to List of Type "Browse"
     List<String>? browseListString =
         sharedPreferences!.getStringList('browseList');
     if (browseListString != null) {
@@ -62,9 +73,9 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  removeData() async {
-    //Remove all recents
-    await sharedPreferences!.clear();
+  removeData(String key) async {
+    //Remove specific shared pref key
+    await sharedPreferences!.remove(key);
     loadData();
   }
 
@@ -80,6 +91,28 @@ class _MainPageState extends State<MainPage> {
     list.removeWhere((e) => toRemove.contains(e));
     saveData();
     loadData();
+  }
+
+  removeBrowseSpecificData(Browse value) async {
+    //Remove specific
+    var toRemove = [];
+    browseList.forEach((element) {
+      if (element.title == value.title) {
+        print('${element.title} is found');
+        toRemove.add(element);
+      }
+    });
+    browseList.removeWhere((e) => toRemove.contains(e));
+    saveBrowseData();
+    loadData();
+  }
+
+  void saveBrowseData() {
+    //Saving the recents data in the shared preferences
+    List<String> stringList =
+        browseList.map((item) => json.encode(item.toMap())).toList();
+    sharedPreferences!.setStringList('browseList', stringList);
+    print('Browsing Items Saved');
   }
 
   void loadSharedPreferencesAndData() async {
@@ -102,18 +135,22 @@ class _MainPageState extends State<MainPage> {
       isBottomSheetOpen = true;
       // Disable the show bottom sheet button.
       _showBottomSheetCallback = null;
+      loadData();
     });
 
     _scaffoldKey.currentState!
         .showBottomSheet<void>(
           (context) {
             return BottomSheetContent(
-              removeRecent: () => removeData(),
+              removeRecent: (value) => removeData(value),
               service: catalogService,
               recentList: list,
               browseList: browseList,
               loadList: () => loadSharedPreferencesAndData(),
               removeSpecificItem: (value) => removeSpecificData(value),
+              removeBrowseSpecificItem: (value) =>
+                  removeBrowseSpecificData(value),
+              isConnected: isConnected!,
             );
           },
           elevation: 25,
@@ -137,130 +174,177 @@ class _MainPageState extends State<MainPage> {
     Navigator.of(context).pop();
   }
 
+  void showInSnackBar(String value) {
+    final snackBar =
+        new SnackBar(content: new Text(value), backgroundColor: Colors.red);
+
+    // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
+
+    switch (_source.keys.toList()[0]) {
+      case ConnectivityResult.none:
+        setState(() {
+          isConnected = false;
+        });
+        break;
+      case ConnectivityResult.mobile:
+        setState(() {
+          isConnected = true;
+        });
+        break;
+      case ConnectivityResult.wifi:
+        setState(() {
+          isConnected = true;
+        });
+    }
+
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Color(0xffF8F7FF),
         body: SingleChildScrollView(
-          child: SafeArea(
-            child: Column(
-              children: <Widget>[
-                Stack(
-                  children: <Widget>[
-                    Container(
-                      height: 250.0,
-                      width: width,
-                      // color: Colors.amber,
-                      child: Hero(
-                        tag: 'Pattern',
-                        child: SvgPicture.asset(
-                          "assets/images/Pattern.svg",
-                          fit: BoxFit.cover,
-                          height: 350,
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 100,
-                      top: 10,
-                      child: Container(
-                        // height: 250.0,
+            child: SafeArea(
+              child: Column(
+                children: <Widget>[
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        height: 250.0,
                         width: width,
                         // color: Colors.amber,
-                        child: Image.asset(
-                          "assets/images/wiki.png",
-                          // fit: BoxFit.scaleDown,
-                          height: 170,
-                          width: 170,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                          const EdgeInsets.fromLTRB(20.0, 50.0, 20.0, 10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Hero(
-                            tag: 'Flutter',
-                            child: Text(
-                              'Flutter',
-                              style: kHeadingOne,
-                            ),
-                          ),
-                          Hero(
-                            tag: 'Wiki',
-                            child: Text(
-                              'Wiki',
-                              style: kHeadingOne,
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20.0,
-                          ),
-                          Text(
-                            kDesc,
-                            maxLines: 3,
-                            style: kBody,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 20.0,
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SearchPage(
-                                  subString: '',
-                                )));
-                  },
-                  child: AvatarGlow(
-                    glowColor: Colors.blue,
-                    endRadius: 90.0,
-                    duration: Duration(milliseconds: 2000),
-                    repeat: true,
-                    showTwoGlows: true,
-                    repeatPauseDuration: Duration(milliseconds: 100),
-                    child: Material(
-                      // Replace this child with your own
-                      elevation: 8.0,
-                      shape: CircleBorder(),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
                         child: Hero(
-                          tag: 'search',
+                          tag: 'Pattern',
                           child: SvgPicture.asset(
-                            'assets/images/Search.svg',
-                            fit: BoxFit.none,
+                            "assets/images/Pattern.svg",
+                            fit: BoxFit.cover,
+                            height: 350,
                           ),
                         ),
-                        radius: 30.0,
                       ),
+                      Positioned(
+                        left: 100,
+                        top: 10,
+                        child: Container(
+                          // height: 250.0,
+                          width: width,
+                          // color: Colors.amber,
+                          child: Image.asset(
+                            "assets/images/wiki.png",
+                            // fit: BoxFit.scaleDown,
+                            height: 170,
+                            width: 170,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(20.0, 50.0, 20.0, 10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Hero(
+                              tag: 'Flutter',
+                              child: Text(
+                                'Flutter',
+                                style: kHeadingOne,
+                              ),
+                            ),
+                            Hero(
+                              tag: 'Wiki',
+                              child: Text(
+                                'Wiki',
+                                style: kHeadingOne,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 20.0,
+                            ),
+                            Text(
+                              kDesc,
+                              maxLines: 3,
+                              style: kBody,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 20.0,
+                  ),
+                  isConnected!
+                      ? InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SearchPage(
+                                  subString: '',
+                                ),
+                              ),
+                            );
+                          },
+                          child: AvatarGlow(
+                            glowColor: Colors.blue,
+                            endRadius: 90.0,
+                            duration: Duration(milliseconds: 2000),
+                            repeat: true,
+                            showTwoGlows: true,
+                            repeatPauseDuration: Duration(milliseconds: 100),
+                            child: Material(
+                              // Replace this child with your own
+                              elevation: 8.0,
+                              shape: CircleBorder(),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                child: Hero(
+                                  tag: 'search',
+                                  child: SvgPicture.asset(
+                                    'assets/images/Search.svg',
+                                    fit: BoxFit.none,
+                                  ),
+                                ),
+                                radius: 30.0,
+                              ),
+                            ),
+                          ),
+                        )
+                      : SizedBox(
+                          height: height * 0.3,
+                          child: Material(
+                            // Replace this child with your own
+                            elevation: 8.0,
+                            shape: CircleBorder(),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              child: SvgPicture.asset(
+                                'assets/images/noInternet.svg',
+                                fit: BoxFit.scaleDown,
+                                height: 50.0,
+                                width: 50.0,
+                              ),
+                              radius: 30.0,
+                            ),
+                          ),
+                        ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      isConnected! ? kSearch : kSearchNoInternet,
+                      maxLines: 3,
+                      style: kHeadingTwo.copyWith(fontSize: 20.0),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    kSearch,
-                    maxLines: 3,
-                    style: kHeadingTwo.copyWith(fontSize: 20.0),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
         floatingActionButton: FloatingActionButton(
           onPressed: isBottomSheetOpen
               ? _hideBottomSheetCallback

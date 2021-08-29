@@ -17,7 +17,9 @@ import 'package:url_launcher/url_launcher.dart';
 class SearchPage extends StatefulWidget {
   final String subString;
 
-  const SearchPage({Key? key, required this.subString}) : super(key: key);
+  const SearchPage(
+      {Key? key, required this.subString})
+      : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -35,9 +37,11 @@ class _SearchPageState extends State<SearchPage> {
   void searchWiki(String query, bool onSubmitted) async {
     var infoData = await catalogService.searchWiki(query, onSubmitted);
     WikiModel infoFetched = WikiModel.fromJson(infoData);
-    setState(() {
-      results = infoFetched;
-    });
+    if (mounted) {
+      setState(() {
+        results = infoFetched;
+      });
+    }
   }
 
   launchURL(url) async {
@@ -146,7 +150,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     var searchResultData = results.query;
-    double width = MediaQuery.of(context).size.width;
+    // double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -163,9 +167,11 @@ class _SearchPageState extends State<SearchPage> {
                   child: SvgPicture.asset('assets/images/Back.svg'),
                   onTap: () {
                     Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => MainPage()));
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => MainPage(),
+                      ),
+                    );
                   },
                 ),
                 title: Text(
@@ -293,25 +299,19 @@ class _SearchPageState extends State<SearchPage> {
                                         Browse(
                                           title: results
                                               .query!.pages![index].title,
-                                          url: results
-                                              .query!
-                                              .pages![index].url,
-                                          desc: results
-                                              .query!
-                                                      .pages![index].terms !=
+                                          url: results.query!.pages![index].url,
+                                          desc: results.query!.pages![index]
+                                                      .terms !=
                                                   null
-                                              ? results
-                                              .query!.pages![index]
+                                              ? results.query!.pages![index]
                                                   .terms!.description![0]
                                               : "Description not available",
                                           extract: results
-                                              .query!
-                                              .pages![index].extract,
+                                              .query!.pages![index].extract,
                                         ),
                                       );
                                       launchURL(
-                                          results
-                                              .query!.pages![index].url);
+                                          results.query!.pages![index].url);
                                     },
                                     tileColor: Colors.white,
                                     contentPadding: EdgeInsets.all(8.0),

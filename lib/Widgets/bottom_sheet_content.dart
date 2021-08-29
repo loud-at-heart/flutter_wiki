@@ -13,9 +13,11 @@ class BottomSheetContent extends StatefulWidget {
   final CatalogService service;
   final List<Recents> recentList;
   final List<Browse> browseList;
-  final Function removeRecent;
+  final Function(String) removeRecent;
   final Function loadList;
   final Function(String) removeSpecificItem;
+  final Function(Browse) removeBrowseSpecificItem;
+  final bool isConnected;
 
   const BottomSheetContent({
     Key? key,
@@ -25,6 +27,8 @@ class BottomSheetContent extends StatefulWidget {
     required this.loadList,
     required this.removeSpecificItem,
     required this.browseList,
+    required this.removeBrowseSpecificItem,
+    required this.isConnected,
   }) : super(key: key);
 
   @override
@@ -34,7 +38,7 @@ class BottomSheetContent extends StatefulWidget {
 class _BottomSheetContentState extends State<BottomSheetContent> {
   @override
   void initState() {
-    widget.loadList;
+    // widget.loadList;
     super.initState();
   }
 
@@ -45,6 +49,71 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
       throw 'Could not launch $url';
     }
   }
+
+  Widget emptyState(String text) {
+    return Column(
+      children: [
+        Image.asset(
+          "assets/images/loading.gif",
+          height: 250.0,
+          width: 250.0,
+        ),
+        Text(
+          '$text',
+          style: kBody,
+        ),
+      ],
+    );
+  }
+
+  Widget _selectPopup({required Widget popupButton}) => PopupMenuButton<int>(
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 1,
+            child: ListTile(
+              leading: Image.asset(
+                "assets/images/delete.png",
+              ),
+              title: Text('Search'),
+              onTap: () {
+                setState(() {
+                  widget.removeRecent('list');
+                  widget.loadList();
+                  widget.recentList.clear();
+                  widget.service.deleteAllCache();
+                });
+                Navigator.pop(context);
+              },
+            ),
+          ),
+          if (widget.isConnected)
+            PopupMenuItem(
+              value: 2,
+              child: ListTile(
+                leading: Image.asset(
+                  "assets/images/delete.png",
+                ),
+                title: Text("Browsing"),
+                onTap: () {
+                  setState(() {
+                    widget.removeRecent('browseList');
+                    widget.loadList();
+                    widget.browseList.clear();
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+        ],
+        // initialValue: 2,
+        onCanceled: () {
+          print("You have canceled the menu.");
+        },
+        onSelected: (value) {
+          print("value:$value");
+        },
+        child: popupButton,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -63,19 +132,12 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                 ),
               ),
             ),
-            trailing: ClipOval(
+            trailing: _selectPopup(
+                popupButton: ClipOval(
               child: Material(
                 color: Colors.red, // Button color
                 child: InkWell(
                   splashColor: Colors.red.shade800, // Splash color
-                  onTap: () {
-                    setState(() {
-                      widget.removeRecent();
-                      widget.loadList();
-                      widget.recentList.clear();
-                      widget.service.deleteAllCache();
-                    });
-                  },
                   child: SizedBox(
                     width: 45,
                     height: 45,
@@ -86,7 +148,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                   ),
                 ),
               ),
-            ),
+            )),
           ),
           const SizedBox(
             height: 20.0,
@@ -103,7 +165,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
             child: SizedBox(
               height: MediaQuery.of(context).size.height * 0.47,
               child: DefaultTabController(
-                length: 2,
+                length: widget.isConnected ? 2 : 1,
                 child: Scaffold(
                   appBar: TabBar(
                     onTap: (index) {
@@ -121,18 +183,19 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                           ),
                         ),
                       ),
-                      Tab(
-                        child: Text(
-                          'BROWSING',
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 3.0,
+                      if (widget.isConnected)
+                        Tab(
+                          child: Text(
+                            'BROWSING',
+                            maxLines: 1,
+                            style: TextStyle(
+                              fontSize: 20.0,
+                              fontFamily: 'Montserrat',
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 3.0,
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                   body: TabBarView(
@@ -175,65 +238,90 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                                 );
                               },
                             )
-                          : Column(
-                              children: [
-                                Image.asset(
-                                  "assets/images/loading.gif",
-                                  height: 250.0,
-                                  width: 250.0,
-                                ),
-                                Text(
-                                  'Search something...',
-                                  style: kBody,
-                                ),
-                              ],
-                            ),
-                      ListView.builder(
-                          itemCount: widget.browseList.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Card(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                elevation: 5,
-                                // color: DynamicColor().getColor(1.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: ListTile(
-                                    onLongPress: () {
-                                      HapticFeedback.heavyImpact();
-                                      share(
-                                          context,
-                                          widget.browseList[index].extract,
-                                          widget.browseList[index].url);
-                                    },
-                                    onTap: () {
-                                      launchURL(
-                                          widget.browseList[index].url);
-                                    },
-                                    tileColor: Colors.white,
-                                    contentPadding: EdgeInsets.all(8.0),
-                                    leading: Image.asset(
-                                      "assets/images/wiki.png",
-                                      scale: 8,
-                                      height: 80,
-                                      width: 80,
+                          : emptyState("Search something..."),
+                      if (widget.isConnected)
+                        widget.browseList.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: widget.browseList.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      elevation: 5,
+                                      // color: DynamicColor().getColor(1.0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: ListTile(
+                                          onLongPress: () {
+                                            HapticFeedback.heavyImpact();
+                                            share(
+                                                context,
+                                                widget
+                                                    .browseList[index].extract,
+                                                widget.browseList[index].url);
+                                          },
+                                          tileColor: Colors.white,
+                                          contentPadding: EdgeInsets.all(8.0),
+                                          leading: InkWell(
+                                            onTap: () {
+                                              launchURL(
+                                                  widget.browseList[index].url);
+                                            },
+                                            child: Image.asset(
+                                              "assets/images/wiki.png",
+                                              scale: 8,
+                                              height: 80,
+                                              width: 80,
+                                            ),
+                                          ),
+                                          subtitle: InkWell(
+                                            onTap: () {
+                                              launchURL(
+                                                  widget.browseList[index].url);
+                                            },
+                                            child: Text(
+                                              widget.browseList[index].desc,
+                                            ),
+                                          ),
+                                          title: InkWell(
+                                            onTap: () {
+                                              launchURL(
+                                                  widget.browseList[index].url);
+                                            },
+                                            child: Text(
+                                              widget.browseList[index].title,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline6,
+                                            ),
+                                          ),
+                                          trailing: InkWell(
+                                            child: Container(
+                                              height: double.infinity,
+                                              child: Icon(Icons.clear),
+                                            ),
+                                            onTap: () {
+                                              var browseInfoName =
+                                                  widget.browseList[index];
+                                              setState(() {
+                                                widget.removeBrowseSpecificItem(
+                                                    browseInfoName);
+                                                widget.browseList
+                                                    .remove(browseInfoName);
+                                                widget.loadList();
+                                              });
+                                            },
+                                          ),
+                                          isThreeLine: true,
+                                        ),
+                                      ),
                                     ),
-                                    subtitle: Text(
-                                        widget.browseList[index].desc,
-                                    ),
-                                    title: Text(
-                                      widget.browseList[index].title,
-                                      style:
-                                          Theme.of(context).textTheme.headline6,
-                                    ),
-                                    isThreeLine: true,
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
+                                  );
+                                })
+                            : emptyState('Browse Something...'),
                     ],
                   ),
                 ),
