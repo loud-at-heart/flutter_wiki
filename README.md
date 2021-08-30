@@ -15,12 +15,26 @@ This is the Wikipedia API:
 - [Page Details API](https://en.wikipedia.org/w/api.php?action=query&prop=info&inprop=url&format=json&pageids=717)
 - [Combined API](https://en.wikipedia.org//w/api.php?action=query&format=json&prop=extracts%7Cpageimages%7Cpageterms%7Cinfo&inprop=url&generator=prefixsearch&formatversion=2&piprop=thumbnail&pithumbsize=50&wbptterms=description&exsentences=5&exintro=1&explaintext=1&gpslimit=50&gpssearch=india)
 
-![Splash Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/1.png?raw=true "Splash Screen")
+<!-- ![Splash Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/1.png?raw=true "Splash Screen")
 ![Home Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/2.png?raw=true "Home Screen")
 ![Search History Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/3.png?raw=true "Search History Screen")
 ![Browsing History Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/4.png?raw=true "Browsing History Screen")
-![Search Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/5.png?raw=true "Search Screen")
+![Search Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/5.png?raw=true "Search Screen") -->
 
+#### Flutter App Screenshots
+
+<table>
+  <tr>
+    <td>Splash Screen</td>
+    <td>Home Screen</td>
+    <td>Search History Screen</td>
+  </tr>
+  <tr>
+    <td><img src="Screenshots/1.png" width=270 height=480></td>
+    <td><img src="Screenshots/2.png" width=270 height=480></td>
+    <td><img src="Screenshots/3.png" width=270 height=480></td>
+  </tr>
+ </table>
 
 ## Getting Started
 
