@@ -60,6 +60,7 @@ class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController controller;
   late Animation<double> animation;
+
   // bool? isConnected;
 
   @override

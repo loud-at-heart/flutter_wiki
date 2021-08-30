@@ -16,9 +16,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SearchPage extends StatefulWidget {
   final String subString;
+  final bool isConnected;
 
   const SearchPage(
-      {Key? key, required this.subString})
+      {Key? key, required this.subString, required this.isConnected})
       : super(key: key);
 
   @override
@@ -294,25 +295,42 @@ class _SearchPageState extends State<SearchPage> {
                                               .pages![index].extract,
                                           searchResultData.pages![index].url);
                                     },
-                                    onTap: () {
-                                      addBrowseItem(
-                                        Browse(
-                                          title: results
-                                              .query!.pages![index].title,
-                                          url: results.query!.pages![index].url,
-                                          desc: results.query!.pages![index]
-                                                      .terms !=
-                                                  null
-                                              ? results.query!.pages![index]
-                                                  .terms!.description![0]
-                                              : "Description not available",
-                                          extract: results
-                                              .query!.pages![index].extract,
-                                        ),
-                                      );
-                                      launchURL(
-                                          results.query!.pages![index].url);
-                                    },
+                                    onTap: widget.isConnected
+                                        ? () {
+                                            addBrowseItem(
+                                              Browse(
+                                                title: results
+                                                    .query!.pages![index].title,
+                                                url: results
+                                                    .query!.pages![index].url,
+                                                desc: results
+                                                            .query!
+                                                            .pages![index]
+                                                            .terms !=
+                                                        null
+                                                    ? results
+                                                        .query!
+                                                        .pages![index]
+                                                        .terms!
+                                                        .description![0]
+                                                    : "Description not available",
+                                                extract: results.query!
+                                                    .pages![index].extract,
+                                                imgUrl: searchResultData!
+                                                            .pages![index]
+                                                            .thumbnail !=
+                                                        null
+                                                    ? searchResultData
+                                                        .pages![index]
+                                                        .thumbnail!
+                                                        .source
+                                                    : 'null',
+                                              ),
+                                            );
+                                            launchURL(results
+                                                .query!.pages![index].url);
+                                          }
+                                        : null,
                                     tileColor: Colors.white,
                                     contentPadding: EdgeInsets.all(8.0),
                                     leading: searchResultData!

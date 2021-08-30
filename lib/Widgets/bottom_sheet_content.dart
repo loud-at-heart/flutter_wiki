@@ -6,6 +6,7 @@ import 'package:flutter_wiki/Model/recent.dart';
 import 'package:flutter_wiki/Screens/searchPage.dart';
 import 'package:flutter_wiki/Services/searchList.dart';
 import 'package:flutter_wiki/Services/share.dart';
+import 'package:flutter_wiki/Widgets/shimmer_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -216,6 +217,7 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                                               SearchPage(
                                             subString:
                                                 widget.recentList[index].title,
+                                            isConnected: widget.isConnected,
                                           ),
                                         ),
                                       );
@@ -270,12 +272,20 @@ class _BottomSheetContentState extends State<BottomSheetContent> {
                                               launchURL(
                                                   widget.browseList[index].url);
                                             },
-                                            child: Image.asset(
-                                              "assets/images/wiki.png",
-                                              scale: 8,
-                                              height: 80,
-                                              width: 80,
-                                            ),
+                                            child: widget.browseList[index]
+                                                        .imgUrl !=
+                                                    'null'
+                                                ? CacheImage(
+                                                    url: widget
+                                                        .browseList[index]
+                                                        .imgUrl!,
+                                                  )
+                                                : Image.asset(
+                                                    "assets/images/wiki.png",
+                                                    scale: 8,
+                                                    height: 80,
+                                                    width: 80,
+                                                  ),
                                           ),
                                           subtitle: InkWell(
                                             onTap: () {

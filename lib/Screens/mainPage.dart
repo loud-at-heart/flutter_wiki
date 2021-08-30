@@ -183,34 +183,36 @@ class _MainPageState extends State<MainPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-
+  void connection(){
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
         setState(() {
           isConnected = false;
         });
-        WidgetsBinding.instance!.addPostFrameCallback(
-            (_) => showInSnackBar('Internet Not Connected'));
+        // WidgetsBinding.instance!.addPostFrameCallback(
+        //     (_) => showInSnackBar('Internet Not Connected'));
         break;
       case ConnectivityResult.mobile:
         setState(() {
           isConnected = true;
         });
-        WidgetsBinding.instance!.addPostFrameCallback(
-            (_) => showInSnackBar('Mobile Internet Connected'));
+        // WidgetsBinding.instance!.addPostFrameCallback(
+        //         (_) => showInSnackBar('Mobile Internet Connected'));
         break;
       case ConnectivityResult.wifi:
         setState(() {
           isConnected = true;
         });
-        WidgetsBinding.instance!.addPostFrameCallback(
-            (_) => showInSnackBar('Wifi Internet Connected'));
+        // WidgetsBinding.instance!.addPostFrameCallback(
+        //         (_) => showInSnackBar('Wifi Internet Connected'));
     }
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    connection();
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Color(0xffF8F7FF),
@@ -293,6 +295,7 @@ class _MainPageState extends State<MainPage> {
                             MaterialPageRoute(
                               builder: (context) => SearchPage(
                                 subString: '',
+                                isConnected: isConnected!,
                               ),
                             ),
                           );

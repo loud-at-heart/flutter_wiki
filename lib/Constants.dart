@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 TextStyle kHeadingOne = TextStyle(
-fontSize: 48.0,
-color: Color(0xff5E56E7),
-fontFamily: 'Montserrat',
-fontWeight: FontWeight.w600,
+  fontSize: 48.0,
+  color: Color(0xff5E56E7),
+  fontFamily: 'Montserrat',
+  fontWeight: FontWeight.w600,
 );
 
 TextStyle kHeadingTwo = TextStyle(
@@ -45,9 +45,10 @@ TextStyle kSearchSummary = TextStyle(
   fontFamily: 'Montserrat',
 );
 
-String kDesc ='Wikipedia is an online free content encyclopedia project helping create a world in which everyone can freely share in the sum of all knowledge.';
-String kSearch ='What are you looking for ?';
-String kSearchNoInternet ='You are not Connected !';
+String kDesc =
+    'Wikipedia is an online free content encyclopedia project helping create a world in which everyone can freely share in the sum of all knowledge.';
+String kSearch = 'What are you looking for ?';
+String kSearchNoInternet = 'You are not Connected !';
 List<String> genre = [
   "Fiction",
   "Drama",
@@ -58,4 +59,4 @@ List<String> genre = [
   "Adventure"
 ];
 
-int i=0;
+int i = 0;
