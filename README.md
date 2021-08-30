@@ -16,7 +16,7 @@ This is the Wikipedia API:
 - [Combined API](https://en.wikipedia.org//w/api.php?action=query&format=json&prop=extracts%7Cpageimages%7Cpageterms%7Cinfo&inprop=url&generator=prefixsearch&formatversion=2&piprop=thumbnail&pithumbsize=50&wbptterms=description&exsentences=5&exintro=1&explaintext=1&gpslimit=50&gpssearch=india)
 
 ![Splash Screen](https://raw.githubusercontent.com/loud-at-heart/flutter_wiki/master/Screenshots/1.png?token=AITHSNY5635GUQJVLO7YCKDBFR6BO "Splash Screen")
-![Home Screen](hhttps://raw.githubusercontent.com/loud-at-heart/flutter_wiki/master/Screenshots/2.png?token=AITHSNY5635GUQJVLO7YCKDBFR6BO "Home Screen")
+![Home Screen](https://raw.githubusercontent.com/loud-at-heart/flutter_wiki/master/Screenshots/2.png?token=AITHSNY5635GUQJVLO7YCKDBFR6BO "Home Screen")
 ![Search History Screen](https://raw.github.com/loud-at-heart/flutter_wiki/master/Screenshots/3.png "Search History Screen")
 ![Browsing History Screen](https://raw.github.com/loud-at-heart/flutter_wiki/master/Screenshots/4.png "Browsing History Screen")
 ![Search Screen](https://raw.github.com/loud-at-heart/flutter_wiki/master/Screenshots/5.png "Search Screen")
