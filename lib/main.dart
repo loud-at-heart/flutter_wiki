@@ -3,9 +3,7 @@ import 'package:flutter/animation.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'Screens/mainPage.dart';
-import 'Screens/noInternetPage.dart';
 import 'dart:async';
-import 'dart:io';
 
 Future<void> main() async {
   runApp(MyApp());

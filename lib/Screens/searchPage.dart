@@ -79,6 +79,7 @@ class _SearchPageState extends State<SearchPage> {
     } else {
       list = [];
     }
+    //Loading the results data and mapping them to List of Type "Browse"
     List<String>? browseListString =
         sharedPreferences!.getStringList('browseList');
     if (browseListString != null) {

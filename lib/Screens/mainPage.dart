@@ -168,6 +168,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _hidePersistentBottomSheet() {
+    //Hiding the Bottom Modal Sheet
     setState(() {
       isBottomSheetOpen = false;
     });
@@ -183,7 +184,7 @@ class _MainPageState extends State<MainPage> {
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  void connection(){
+  void connection() {
     switch (_source.keys.toList()[0]) {
       case ConnectivityResult.none:
         setState(() {
@@ -203,8 +204,8 @@ class _MainPageState extends State<MainPage> {
         setState(() {
           isConnected = true;
         });
-        // WidgetsBinding.instance!.addPostFrameCallback(
-        //         (_) => showInSnackBar('Wifi Internet Connected'));
+      // WidgetsBinding.instance!.addPostFrameCallback(
+      //         (_) => showInSnackBar('Wifi Internet Connected'));
     }
   }
 
