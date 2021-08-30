@@ -16,10 +16,10 @@ This is the Wikipedia API:
 - [Combined API](https://en.wikipedia.org//w/api.php?action=query&format=json&prop=extracts%7Cpageimages%7Cpageterms%7Cinfo&inprop=url&generator=prefixsearch&formatversion=2&piprop=thumbnail&pithumbsize=50&wbptterms=description&exsentences=5&exintro=1&explaintext=1&gpslimit=50&gpssearch=india)
 
 ![Splash Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/1.png?raw=true "Splash Screen")
-![Home Screen](https://raw.githubusercontent.com/loud-at-heart/flutter_wiki/master/Screenshots/2.png?token=AITHSN35WS6BU6KQZN73HMTBFR6JA "Home Screen")
-![Search History Screen](https://raw.githubusercontent.com/loud-at-heart/flutter_wiki/master/Screenshots/3.png?token=AITHSN4PF4JPZPDVL3NE2N3BFR6MI "Search History Screen")
-![Browsing History Screen](https://raw.githubusercontent.com/loud-at-heart/flutter_wiki/master/Screenshots/4.png?token=AITHSNYF5K4GUBE3LE7NBO3BFR6PC "Browsing History Screen")
-![Search Screen](https://raw.githubusercontent.com/loud-at-heart/flutter_wiki/master/Screenshots/5.png?token=AITHSN22YOSVOTXREVBW3GDBFR6QW "Search Screen")
+![Home Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/2.png?raw=true "Home Screen")
+![Search History Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/3.png?raw=true "Search History Screen")
+![Browsing History Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/4.png?raw=true "Browsing History Screen")
+![Search Screen](https://github.com/loud-at-heart/flutter_wiki/blob/master/Screenshots/5.png?raw=true "Search Screen")
 
 
 ## Getting Started
