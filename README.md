@@ -34,6 +34,16 @@ This is the Wikipedia API:
     <td><img src="Screenshots/2.png" width=270 height=480></td>
     <td><img src="Screenshots/3.png" width=270 height=480></td>
   </tr>
+  <tr>
+    <td>Browsing History Screen</td>
+    <td>Search Screen</td>
+    <td>No Internet Page</td>
+  </tr>
+  <tr>
+    <td><img src="Screenshots/4.png" width=270 height=480></td>
+    <td><img src="Screenshots/5.png" width=270 height=480></td>
+    <td><img src="Screenshots/6.png" width=270 height=480></td>
+  </tr>
  </table>
 
 ## Getting Started
