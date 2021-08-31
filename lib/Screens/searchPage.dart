@@ -273,8 +273,8 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   ],
                 )
-              : results.query != null
-                  ? results.batchcomplete != true
+              : results.batchcomplete != true
+                  ? results.query != null
                       ? ListView.builder(
                           itemCount: results.query!.pages!.length,
                           itemBuilder: (context, index) {
@@ -370,39 +370,39 @@ class _SearchPageState extends State<SearchPage> {
                               ),
                             );
                           })
-                      : Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: <Widget>[
-                              Container(
-                                child: Image(
-                                  image: AssetImage("assets/images/nodata.jpg"),
-                                  height: height * 0.5,
-                                  fit: BoxFit.scaleDown,
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(15),
-                                child: Text(
-                                  "No Results Found!",
-                                  style: kHeadingTwo,
-                                ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.all(15),
-                                child: Text(
-                                  "Try searching another keyword",
-                                  style: kBody,
-                                ),
-                              ),
-                            ],
-                          ),
+                      : Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Center(child: CircularProgressIndicator()),
+                          ],
                         )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Center(child: CircularProgressIndicator()),
-                      ],
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            child: Image(
+                              image: AssetImage("assets/images/nodata.jpg"),
+                              height: height * 0.5,
+                              fit: BoxFit.scaleDown,
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              "No Results Found!",
+                              style: kHeadingTwo,
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            child: Text(
+                              "Try searching another keyword",
+                              style: kBody,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
         ),
       ),
